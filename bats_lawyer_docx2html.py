@@ -10,7 +10,7 @@ def walkall_files(dirpath):
     for (root,subdirs,files) in os.walk(dirpath):
         for fn in files:
             path = os.path.join(root,fn)
-            if(".git" in path):
+            if(".git\\" in path):
                 pass
             else:
                 fps.append(path)
@@ -124,3 +124,53 @@ def x2html(fps,nfps):
     return(nfps)
 
 nfps = x2html(fps,nfps)
+
+
+###
+
+import os
+import docx
+from win32com import client as wc
+import HTMLParser
+import shutil
+
+
+def walkall_files(dirpath):
+    fps = []
+    for (root,subdirs,files) in os.walk(dirpath):
+        for fn in files:
+            path = os.path.join(root,fn)
+            if(".git\\" in path):
+                pass
+            elif(".files" in path):
+                pass
+            else:
+                fps.append(path)
+    return(fps)
+
+fps = walkall_files(os.getcwd() + "\\Lawyer")
+
+def prepend_to_file(prepend,**kwargs):
+    prepend=bytes(prepend)
+    fd = open(kwargs['fn'],"rb+")
+    rslt = fd.read()
+    fd.close()
+    os.remove(kwargs['fn'])
+    fd = open(kwargs['fn'],"wb+")
+    fd.write(prepend+rslt)
+    fd.close()
+
+
+def insert_doctype(fps):
+    doctype = b"<!DOCTYPE html>\r\n"
+    length = fps.__len__()
+    for i in range(0,length):
+        path = fps[i]
+        if(".html" in path):
+            prepend_to_file(doctype,fn=path)
+        else:
+            pass
+    return(fps)
+
+fps = insert_doctype(fps)
+            
