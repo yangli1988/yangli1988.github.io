@@ -3,7 +3,7 @@ import docx
 from win32com import client as wc
 import HTMLParser
 import shutil
-
+import chardet
 
 def walkall_files(dirpath):
     fps = []
@@ -180,15 +180,52 @@ def read_file_content(**kwargs):
     fd.close()
     return(rslt)
     
-def commit_change(fps):
+    
+    
+import chardet
+
+def convert_code(to_codec="UTF8",**kwargs):
+    fd = open(kwargs['fn'],"rb+")
+    rslt = fd.read()
+    fd.close()
+    from_codec = chardet.detect(rslt)['encoding']
+    rslt = rslt.decode(from_codec).encode(to_codec)
+    os.remove(kwargs['fn'])
+    fd = open(kwargs['fn'],"wb+")
+    fd.write(rslt)
+    fd.close()
+
+    
+
+
+def convert_all(fps):
     '''to solve chinese display bug'''
+    failed =[]
     length = fps.__len__()
     for i in range(0,length):
         path = fps[i]
         if(".html" in path):
-            prepend_to_file("\r\n",fn=path)
+            try:
+                convert_code(to_codec="UTF8",fn=path)
+            except:
+                failed.append(path)
+            else:
+                print(path)
         else:
             pass
-    return(fps)
+    return(failed)
 
-fps = insert_doctype(fps)
+failed = convert_all(fps)
+
+
+#####################
+
+def creat_indexes_html(path,dirname,url):
+    
+    rslt= "<html>\r\n<head><\head><body>\r\n"
+    rslt = rslt + '<a href="' + url +'">'
+    rslt = rslt + os.path.splitext(fn)[0] + "<\a>\r\n"
+    rslt = rslt + "</body>\r\n+<\html>"
+    
+    
+
