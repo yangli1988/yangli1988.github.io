@@ -173,4 +173,22 @@ def insert_doctype(fps):
     return(fps)
 
 fps = insert_doctype(fps)
-            
+
+def read_file_content(**kwargs):
+    fd = open(kwargs['fn'],kwargs['op'])
+    rslt = fd.read()
+    fd.close()
+    return(rslt)
+    
+def commit_change(fps):
+    '''to solve chinese display bug'''
+    length = fps.__len__()
+    for i in range(0,length):
+        path = fps[i]
+        if(".html" in path):
+            prepend_to_file("\r\n",fn=path)
+        else:
+            pass
+    return(fps)
+
+fps = insert_doctype(fps)
