@@ -292,7 +292,10 @@ def get_sons(dirname):
         cond = os.path.isfile(path)
         if(cond):
             if(".html" in path):
-                leafs.append(path)
+                if("index.html" in path):
+                    pass
+                else:
+                    leafs.append(path)
             else:
                 pass
         else:
@@ -316,14 +319,14 @@ def creat_indexes(dirs):
         leafs = tmp['leafs']
         subdirs = tmp['subdirs']
         rslt= "<html>\r\n    <head>\r\n    </head>\r\n    <body>\r\n"
-        rslt = rslt + ' '*8 + '<div style="color:#00FF00">'
+        rslt = rslt + ' '*8 + '<div style="color:#00FF00">\r\n'
         for leaf in leafs:
             url = get_leaf_url(leaf)
             rslt = rslt + ' '*12 + "<li>"+'<a href="' + url +'">'
             basename = os.path.basename(url)
             rslt = rslt +  os.path.splitext(basename)[0] + "</a></li>\r\n"
         rslt = rslt + ' '*8 + '</div>\r\n'
-        rslt = rslt + ' '*8 + '<div style="color:#0000FF">'
+        rslt = rslt + ' '*8 + '<div style="color:#0000FF">\r\n'
         for subdir in subdirs:
             url = get_subdir_url(subdir)
             rslt = rslt + ' '*12 + '<li>'+'<a href="' + url +'">'
@@ -345,8 +348,4 @@ def creat_indexes(dirs):
 #
 creat_indexes(dirs)  
 
-<div style="color:#00FF00">
-  <ul>This is a header</ul>
-  <ul>This is a paragraph.</ul>
-</div>
 
