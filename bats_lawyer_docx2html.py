@@ -5,16 +5,16 @@ import HTMLParser
 import shutil
 import chardet
 
-def walkall_files(dirpath):
-    fps = []
-    for (root,subdirs,files) in os.walk(dirpath):
-        for fn in files:
-            path = os.path.join(root,fn)
-            if(".git\\" in path):
-                pass
-            else:
-                fps.append(path)
-    return(fps)
+# def walkall_files(dirpath):
+    # fps = []
+    # for (root,subdirs,files) in os.walk(dirpath):
+        # for fn in files:
+            # path = os.path.join(root,fn)
+            # if(".git\\" in path):
+                # pass
+            # else:
+                # fps.append(path)
+    # return(fps)
 
 
 def new_paths(fps):
@@ -25,10 +25,10 @@ def new_paths(fps):
     return(nfps)
 
 
-# def read_docx(file_name):
-    # doc = docx.Document(file_name)
-    # content = '\n'.join([para.text for para in doc.paragraphs])
-    # return(content)
+def read_docx(file_name):
+    doc = docx.Document(file_name)
+    content = '\n'.join([para.text for para in doc.paragraphs])
+    return(content)
 
 def doc2docx(src_path,saveas_path,word_app ="Word.Application"):
     word = wc.Dispatch(word_app)
@@ -67,9 +67,9 @@ def doc2x(fps):
             pass
     return(fps)
 
-fps = walkall_files(os.getcwd() + "\\Lawyer")
-fps = doc2x(fps)
-nfps = new_paths(fps)
+# fps = walkall_files(os.getcwd() + "\\Lawyer")
+# fps = doc2x(fps)
+# nfps = new_paths(fps)
 
 
 
@@ -123,16 +123,11 @@ def x2html(fps,nfps):
             shutil.copy(fps[i],nfps[i])
     return(nfps)
 
-nfps = x2html(fps,nfps)
+# nfps = x2html(fps,nfps)
 
 
 ###
 
-import os
-import docx
-from win32com import client as wc
-import HTMLParser
-import shutil
 
 
 def walkall_files(dirpath):
@@ -148,7 +143,7 @@ def walkall_files(dirpath):
                 fps.append(path)
     return(fps)
 
-fps = walkall_files(os.getcwd() + "\\Lawyer")
+
 
 def prepend_to_file(prepend,**kwargs):
     prepend=bytes(prepend)
@@ -172,7 +167,7 @@ def insert_doctype(fps):
             pass
     return(fps)
 
-fps = insert_doctype(fps)
+# fps = insert_doctype(fps)
 
 def read_file_content(**kwargs):
     fd = open(kwargs['fn'],kwargs['op'])
@@ -182,7 +177,7 @@ def read_file_content(**kwargs):
     
     
     
-import chardet
+
 
 def convert_code(to_codec="UTF8",**kwargs):
     fd = open(kwargs['fn'],"rb+")
@@ -226,7 +221,7 @@ def convert_all(fps):
             pass
     return(failed)
 
-failed = convert_all(fps)
+# failed = convert_all(fps)
 
 
 #####################
@@ -245,7 +240,6 @@ def walkall_dirs(dirpath):
                 dirs.append(path)
     return(dirs)
 
-dirs = walkall_dirs(os.getcwd() + "\\Lawyer")
 
 
 def get_urls(fps):
@@ -256,7 +250,7 @@ def get_urls(fps):
         urls.append(url)
     return(urls)
 
-urls = get_urls(fps)
+
 
 
 def category(fps):
@@ -270,22 +264,75 @@ def category(fps):
             categ[dir] = [fps[i]]
     return(categ)
 
-categ = category(fps)
+def write_to_file(**kwargs):
+    fd = open(kwargs['fn'],kwargs['op'])
+    fd.write(kwargs['content'])
+    fd.close()
+
+
+
 
 
 #对与每个dir 要生成一个index.html
 
+fps = walkall_files(os.getcwd() + "\\Lawyer")
+dirs = walkall_dirs(os.getcwd() + "\\Lawyer")
+dirs.append('D:\\LiYang\\yangli1988.github.io\\Lawyer')
+urls = get_urls(fps)
+categ = category(fps)
 
 
+def get_sons(dirname):
+    sons = os.listdir(dirname)
+    length = sons.__len__()
+    leafs = []
+    subdirs = []
+    for i in range(0,length):
+        path = dirname+ "\\" + sons[i]
+        cond = os.path.isfile(path)
+        if(cond):
+            if(".html" in path):
+                leafs.append(path)
+            else:
+                pass
+        else:
+            if(".files" in path):
+                pass
+            else:
+                subdirs.append(path)
+    return({"leafs":leafs,"subdirs":subdirs})
 
+def get_leaf_url(path):
+    url = path.replace("\\","/").replace("D:/LiYang/","https://")
+    return(url)
 
-
-def creat_indexes_html(path,dirname,url):
+def get_subdir_url(path):
+    url = path.replace("\\","/").replace("D:/LiYang/","https://") + "/index.html"
+    return(url)
     
-    rslt= "<html>\r\n<head><\head><body>\r\n"
-    rslt = rslt + '<a href="' + url +'">'
-    rslt = rslt + os.path.splitext(fn)[0] + "<\a>\r\n"
-    rslt = rslt + "</body>\r\n+<\html>"
-    
+def creat_indexes(dirs):
+    for dirname in dirs:
+        tmp = get_sons(dirname)
+        leafs = tmp['leafs']
+        subdirs = tmp['subdirs']
+        rslt= "<html>\r\n    <head>\r\n    </head>\r\n    <body>\r\n"
+        for leaf in leafs:
+            url = get_leaf_url(leaf)
+            rslt = rslt + '        <a href="' + url +'">'
+            basename = os.path.basename(url)
+            rslt = rslt +  os.path.splitext(basename)[0] + "</a>\r\n"
+        for subdir in subdirs:
+            url = get_subdir_url(subdir)
+            rslt = rslt + '        <a href="' + url +'">'
+            basename = os.path.basename(subdir)
+            rslt = rslt +  basename + "</a>\r\n"
+        rslt = rslt + "    </body>\r\n</html>"
+        rslt = rslt.encode('utf-8')
+        fn = dirname+"\\index.html"
+        write_to_file(fn=fn,op="wb+",content=rslt)
+
+
+#
+creat_indexes(dirs)  
     
 
