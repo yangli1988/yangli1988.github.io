@@ -316,23 +316,37 @@ def creat_indexes(dirs):
         leafs = tmp['leafs']
         subdirs = tmp['subdirs']
         rslt= "<html>\r\n    <head>\r\n    </head>\r\n    <body>\r\n"
+        rslt = rslt + ' '*8 + '<div style="color:#00FF00">'
         for leaf in leafs:
             url = get_leaf_url(leaf)
-            rslt = rslt + '        <a href="' + url +'">'
+            rslt = rslt + ' '*12 + "<li>"+'<a href="' + url +'">'
             basename = os.path.basename(url)
-            rslt = rslt +  os.path.splitext(basename)[0] + "</a>\r\n"
+            rslt = rslt +  os.path.splitext(basename)[0] + "</a></li>\r\n"
+        rslt = rslt + ' '*8 + '</div>\r\n'
+        rslt = rslt + ' '*8 + '<div style="color:#0000FF">'
         for subdir in subdirs:
             url = get_subdir_url(subdir)
-            rslt = rslt + '        <a href="' + url +'">'
+            rslt = rslt + ' '*12 + '<li>'+'<a href="' + url +'">'
             basename = os.path.basename(subdir)
-            rslt = rslt +  basename + "</a>\r\n"
+            rslt = rslt +  basename + "</a></li>\r\n"
+        rslt = rslt + ' '*8 + '</div>\r\n'
         rslt = rslt + "    </body>\r\n</html>"
         rslt = rslt.encode('utf-8')
         fn = dirname+"\\index.html"
+        try:
+            os.remove(fn)
+        except:
+            pass
+        else:
+            pass
         write_to_file(fn=fn,op="wb+",content=rslt)
 
 
 #
 creat_indexes(dirs)  
-    
+
+<div style="color:#00FF00">
+  <ul>This is a header</ul>
+  <ul>This is a paragraph.</ul>
+</div>
 
