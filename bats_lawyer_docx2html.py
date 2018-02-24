@@ -189,13 +189,23 @@ def convert_code(to_codec="UTF8",**kwargs):
     rslt = fd.read()
     fd.close()
     from_codec = chardet.detect(rslt)['encoding']
-    rslt = rslt.decode(from_codec).encode(to_codec)
-    os.remove(kwargs['fn'])
-    fd = open(kwargs['fn'],"wb+")
-    fd.write(rslt)
-    fd.close()
+    if(from_codec == "utf-8"):
+        pass
+    else:
+        rslt = rslt.decode(from_codec,'ignore').encode(to_codec)
+        os.remove(kwargs['fn'])
+        fd = open(kwargs['fn'],"wb+")
+        fd.write(rslt)
+        fd.close()
 
-    
+def detect_code(fn):
+    fd = open(fn,"rb+")
+    rslt = fd.read()
+    fd.close()
+    from_codec = chardet.detect(rslt)['encoding']
+    print(from_codec)
+    return(rslt)
+
 
 
 def convert_all(fps):
@@ -209,8 +219,9 @@ def convert_all(fps):
                 convert_code(to_codec="UTF8",fn=path)
             except:
                 failed.append(path)
-            else:
                 print(path)
+            else:
+                pass
         else:
             pass
     return(failed)
@@ -219,6 +230,55 @@ failed = convert_all(fps)
 
 
 #####################
+
+
+def walkall_dirs(dirpath):
+    dirs = []
+    for (root,subdirs,files) in os.walk(dirpath):
+        for subdir in subdirs:
+            path = os.path.join(root,subdir)
+            if(".git\\" in path):
+                pass
+            elif(".files" in path):
+                pass
+            else:
+                dirs.append(path)
+    return(dirs)
+
+dirs = walkall_dirs(os.getcwd() + "\\Lawyer")
+
+
+def get_urls(fps):
+    urls = []
+    length = fps.__len__()
+    for i in range(0,length):
+        url = fps[i].replace("\\","/").replace("D:/LiYang/","https://")
+        urls.append(url)
+    return(urls)
+
+urls = get_urls(fps)
+
+
+def category(fps):
+    categ = {}
+    length = fps.__len__()
+    for i in range(0,length):
+        dir = os.path.dirname(fps[i])
+        if(dir in categ):
+            categ[dir].append(fps[i])
+        else:
+            categ[dir] = [fps[i]]
+    return(categ)
+
+categ = category(fps)
+
+
+#对与每个dir 要生成一个index.html
+
+
+
+
+
 
 def creat_indexes_html(path,dirname,url):
     
