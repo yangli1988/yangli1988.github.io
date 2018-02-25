@@ -271,8 +271,12 @@ def write_to_file(**kwargs):
     fd.close()
 
 
-
-
+#color sheet
+#http://tool.oschina.net/commons?type=3
+#https://www.quackit.com/html/tutorial/html_colors.cfm
+#NordVPN
+#嵌入pdf word video mp3
+#http://blog.csdn.net/dlshbn/article/details/52947231
 
 #对与每个dir 要生成一个index.html
 
@@ -282,12 +286,22 @@ dirs.append('D:\\LiYang\\yangli1988.github.io\\Lawyer')
 urls = get_urls(fps)
 categ = category(fps)
 
+def is_image(path):
+    lower = path.lower()
+    jpg = ('.png' == os.path.splitext(lower)[1])
+    png = ('.jpg' == os.path.splitext(lower)[1])
+    if(jpg|png):
+        return(True)
+    else:
+        return(False)
 
 def get_sons(dirname):
     sons = os.listdir(dirname)
     length = sons.__len__()
     leafs = []
     subdirs = []
+    pdfs = []
+    images = []
     for i in range(0,length):
         path = dirname+ "\\" + sons[i]
         cond = os.path.isfile(path)
@@ -297,6 +311,10 @@ def get_sons(dirname):
                     pass
                 else:
                     leafs.append(path)
+            elif(".pdf" in path):
+                pdfs.append(path)
+            elif(is_image(path)):
+                images.append(path)
             else:
                 pass
         else:
@@ -304,7 +322,7 @@ def get_sons(dirname):
                 pass
             else:
                 subdirs.append(path)
-    return({"leafs":leafs,"subdirs":subdirs})
+    return({"leafs":leafs,"subdirs":subdirs,'images':images,'pdfs':pdfs})
 
 def get_leaf_url(path):
     url = path.replace("\\","/").replace("D:/LiYang/","https://")
@@ -313,13 +331,18 @@ def get_leaf_url(path):
 def get_subdir_url(path):
     url = path.replace("\\","/").replace("D:/LiYang/","https://") + "/index.html"
     return(url)
-    
+
+
+
 def creat_indexes(dirs):
     for dirname in dirs:
         tmp = get_sons(dirname)
         leafs = tmp['leafs']
         subdirs = tmp['subdirs']
+        pdfs = tmp['pdfs']
+        images = tmp['images']
         rslt= "<html>\r\n    <head>\r\n    </head>\r\n    <body>\r\n"
+        ####green
         rslt = rslt + ' '*8 + '<div style="color:#00FF00">\r\n'
         for leaf in leafs:
             url = get_leaf_url(leaf)
@@ -327,6 +350,7 @@ def creat_indexes(dirs):
             basename = os.path.basename(url)
             rslt = rslt +  os.path.splitext(basename)[0] + "</a></li>\r\n"
         rslt = rslt + ' '*8 + '</div>\r\n'
+        ####blue
         rslt = rslt + ' '*8 + '<div style="color:#0000FF">\r\n'
         for subdir in subdirs:
             url = get_subdir_url(subdir)
@@ -334,6 +358,23 @@ def creat_indexes(dirs):
             basename = os.path.basename(subdir)
             rslt = rslt +  basename + "</a></li>\r\n"
         rslt = rslt + ' '*8 + '</div>\r\n'
+        ####yellow
+        rslt = rslt + ' '*8 + '<div style="color:#FFFF00">\r\n'
+        for image in images:
+            url = get_subdir_url(image)
+            rslt = rslt + ' '*12 + '<li>'+'<img src="' + url +'"/>'
+            basename = os.path.basename(image)
+            rslt = rslt +  basename + "</li>\r\n"
+        rslt = rslt + ' '*8 + '</div>\r\n'
+        ####red
+        rslt = rslt + ' '*8 + '<div style="color:#FF0000">\r\n'
+        for pdf in pdfs:
+            url = get_subdir_url(pdf)
+            rslt = rslt + ' '*12 + '<li>'+'<embed src="' + url + '" type="application/pdf"' +'/>'
+            basename = os.path.basename(pdf)
+            rslt = rslt +  basename + "</li>\r\n"
+        rslt = rslt + ' '*8 + '</div>\r\n'
+        ####
         rslt = rslt + "    </body>\r\n</html>"
         rslt = rslt.encode('utf-8')
         fn = dirname+"\\index.html"
@@ -417,3 +458,78 @@ def rename_htmldollars(dollar_files):
 rename_htmldollars(dollar_files)
 
 
+##############
+def walkall_docx(dirpath):
+    regex = re.compile(".docx")
+    dollar_files = []
+    for (root,subdirs,files) in os.walk(dirpath):
+        for file in files:
+            path = os.path.join(root,file)
+            m = regex.search(path)
+            if(m):
+                dollar_files.append(path)
+            else:
+                pass
+    return(dollar_files)
+
+all_docxs = walkall_docx(os.getcwd() + "\\Lawyer")
+
+
+######################
+
+
+def x2html_inplace(all_docxs):
+    length = all_docxs.__len__()
+    errors = []
+    for i in range(0,length):
+        op = all_docxs[i]
+        np = os.path.splitext(op)[0]+".html"
+        succ = docx2html(op,np)
+        if(succ):
+            pass
+        else:
+            error_path = op+".error"
+            os.rename(op,error_path)
+            errors.append(op)
+    return(errors)
+
+x2html_inplace(all_docxs)
+
+###########################333
+
+
+
+def walkall_pdf(dirpath):
+    regex = re.compile(".pdf")
+    dollar_files = []
+    for (root,subdirs,files) in os.walk(dirpath):
+        for file in files:
+            path = os.path.join(root,file)
+            m = regex.search(path)
+            if(m):
+                dollar_files.append(path)
+            else:
+                pass
+    return(dollar_files)
+
+all_pdfs = walkall_pdf(os.getcwd() + "\\Lawyer")
+
+
+
+
+def walkall_image(dirpath):
+    dollar_files = []
+    for (root,subdirs,files) in os.walk(dirpath):
+        for file in files:
+            path = os.path.join(root,file)
+            m = is_image(path)
+            if(m):
+                if('.files' in path):
+                    pass
+                else:
+                    dollar_files.append(path)
+            else:
+                pass
+    return(dollar_files)
+
+all_images = walkall_image(os.getcwd() + "\\Lawyer")
