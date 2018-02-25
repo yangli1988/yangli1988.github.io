@@ -343,7 +343,6 @@ def creat_indexes(dirs):
         images = tmp['images']
         rslt= "<html>\r\n    <head>\r\n"
         rslt = rslt + '        <script language="javascript" type="text/javascript">\r\n'
-        rslt = rslt + ' '* 12 + "availWidth_screen=screen.availWidth;\r\n"
         rslt = rslt + ' '* 12 + "pdfWidth=screen.availWidth/4;\r\n"
         rslt = rslt + ' '* 12 + "imageWidth=screen.availWidth/12;\r\n"
         rslt = rslt + "        </script>\r\n"
