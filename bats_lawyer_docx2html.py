@@ -367,7 +367,7 @@ def creat_indexes(dirs):
         for image in images:
             url = get_leaf_url(image)
             basename = os.path.basename(image)
-            rslt = rslt + ' '*12 + '<li>' + os.path.splitext(basename)[0] +'<img src="' + url + '" width="'+ 'availWidth_screen' +'"' + '/>'
+            rslt = rslt + ' '*12 + '<li>' + os.path.splitext(basename)[0] +'<img src="' + url + '" width='+ 'availWidth_screen'  + ' />'
             rslt = rslt +  "</li>\r\n"
         rslt = rslt + ' '*8 + '</div>\r\n'
         ####red
@@ -375,7 +375,7 @@ def creat_indexes(dirs):
         for pdf in pdfs:
             url = get_leaf_url(pdf)
             basename = os.path.basename(pdf)
-            rslt = rslt + ' '*12 + '<li>'+  os.path.splitext(basename)[0] + '<embed src="' + url +  '" width="'+ 'availWidth_screen' +'"' +' type="application/pdf"' +'/>'
+            rslt = rslt + ' '*12 + '<li>'+  os.path.splitext(basename)[0] + '<embed src="' + url +  '" width='+ 'availWidth_screen' +' type="application/pdf"' +'/>'
             rslt = rslt  + "</li>\r\n"
         rslt = rslt + ' '*8 + '</div>\r\n'
         ####
