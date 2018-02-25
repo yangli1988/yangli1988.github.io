@@ -361,7 +361,7 @@ def creat_indexes(dirs):
         ####yellow
         rslt = rslt + ' '*8 + '<div style="color:#FFFF00">\r\n'
         for image in images:
-            url = get_subdir_url(image)
+            url = get_leaf_url(image)
             rslt = rslt + ' '*12 + '<li>'+'<img src="' + url +'"/>'
             basename = os.path.basename(image)
             rslt = rslt +  basename + "</li>\r\n"
@@ -369,7 +369,7 @@ def creat_indexes(dirs):
         ####red
         rslt = rslt + ' '*8 + '<div style="color:#FF0000">\r\n'
         for pdf in pdfs:
-            url = get_subdir_url(pdf)
+            url = get_leaf_url(pdf)
             rslt = rslt + ' '*12 + '<li>'+'<embed src="' + url + '" type="application/pdf"' +'/>'
             basename = os.path.basename(pdf)
             rslt = rslt +  basename + "</li>\r\n"
