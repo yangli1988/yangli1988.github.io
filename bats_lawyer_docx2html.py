@@ -4,6 +4,7 @@ from win32com import client as wc
 import HTMLParser
 import shutil
 import chardet
+import re
 
 # def walkall_files(dirpath):
     # fps = []
@@ -347,5 +348,72 @@ def creat_indexes(dirs):
 
 #
 creat_indexes(dirs)  
+
+
+
+###移除~$
+
+def walkall_dolloardirs(dirpath):
+    regex = re.compile("~\$")
+    dirs = []
+    for (root,subdirs,files) in os.walk(dirpath):
+        for subdir in subdirs:
+            path = os.path.join(root,subdir)
+            m = regex.search(path)
+            if(m):
+                dirs.append(path)
+            else:
+                pass
+    return(dirs)
+
+dollar_dirs = walkall_dolloardirs(os.getcwd() + "\\Lawyer")
+
+
+def rename_dollars(dollar_dirs):
+    length = dollar_dirs.__len__()
+    for i in range(0,length):
+        op = dollar_dirs[i]
+        try:
+            np = dollar_dirs[i].replace("~$","")
+            os.rename(op,np)
+        except:
+            np = dollar_dirs[i].replace("~$","backUp")
+            os.rename(op,np)
+        else:
+            pass
+
+rename_dollars(dollar_dirs)
+
+
+def walkall_dolloarfiles(dirpath):
+    regex = re.compile("~\$")
+    dollar_files = []
+    for (root,subdirs,files) in os.walk(dirpath):
+        for file in files:
+            path = os.path.join(root,file)
+            m = regex.search(path)
+            if(m):
+                dollar_files.append(path)
+            else:
+                pass
+    return(dollar_files)
+
+dollar_files = walkall_dolloarfiles(os.getcwd() + "\\Lawyer")
+
+
+def rename_htmldollars(dollar_files):
+    length = dollar_files.__len__()
+    for i in range(0,length):
+        op = dollar_files[i]
+        try:
+            np = dollar_files[i].replace("~$","")
+            os.rename(op,np)
+        except:
+            np = dollar_files[i].replace("~$","backUp")
+            os.rename(op,np)
+        else:
+            pass
+
+rename_htmldollars(dollar_files)
 
 
