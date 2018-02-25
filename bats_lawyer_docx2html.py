@@ -341,7 +341,11 @@ def creat_indexes(dirs):
         subdirs = tmp['subdirs']
         pdfs = tmp['pdfs']
         images = tmp['images']
-        rslt= "<html>\r\n    <head>\r\n    </head>\r\n    <body>\r\n"
+        rslt= "<html>\r\n    <head>\r\n"
+        rslt = rslt + '        <script language="javascript" type="text/javascript">\r\n'
+        rslt = rslt + ' '* 12 + "availWidth_screen=screen.availWidth;\r\n"
+        rslt = rslt + "        </script>\r\n"
+        rslt = rslt + "    </head>\r\n    <body>\r\n"
         ####green
         rslt = rslt + ' '*8 + '<div style="color:#00FF00">\r\n'
         for leaf in leafs:
@@ -358,21 +362,21 @@ def creat_indexes(dirs):
             basename = os.path.basename(subdir)
             rslt = rslt +  basename + "</a></li>\r\n"
         rslt = rslt + ' '*8 + '</div>\r\n'
-        ####yellow
-        rslt = rslt + ' '*8 + '<div style="color:#FFFF00">\r\n'
+        ####purple
+        rslt = rslt + ' '*8 + '<div style="color:#A020F0">\r\n'
         for image in images:
             url = get_leaf_url(image)
-            rslt = rslt + ' '*12 + '<li>'+'<img src="' + url +'"/>'
             basename = os.path.basename(image)
-            rslt = rslt +  basename + "</li>\r\n"
+            rslt = rslt + ' '*12 + '<li>' + os.path.splitext(basename)[0] +'<img src="' + url + '" width="'+ 'availWidth_screen' +'"' + '/>'
+            rslt = rslt +  "</li>\r\n"
         rslt = rslt + ' '*8 + '</div>\r\n'
         ####red
         rslt = rslt + ' '*8 + '<div style="color:#FF0000">\r\n'
         for pdf in pdfs:
             url = get_leaf_url(pdf)
-            rslt = rslt + ' '*12 + '<li>'+'<embed src="' + url + '" type="application/pdf"' +'/>'
             basename = os.path.basename(pdf)
-            rslt = rslt +  basename + "</li>\r\n"
+            rslt = rslt + ' '*12 + '<li>'+  os.path.splitext(basename)[0] + '<embed src="' + url +  '" width="'+ 'availWidth_screen' +'"' +' type="application/pdf"' +'/>'
+            rslt = rslt  + "</li>\r\n"
         rslt = rslt + ' '*8 + '</div>\r\n'
         ####
         rslt = rslt + "    </body>\r\n</html>"
